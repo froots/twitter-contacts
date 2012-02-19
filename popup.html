@@ -5,6 +5,12 @@
 		<title>Twitter Contacts</title>
 	</head>
 	<body>
-		<h1>Twitter Contacts</h1>
+		<a href="#" id="launch">Go!</a>
+		<script>
+			var bgPage = chrome.extension.getBackgroundPage();
+			document.getElementById("launch").addEventListener("click", function() {
+				bgPage.app.init();
+			});
+		</script>
 	</body>
 </html>
