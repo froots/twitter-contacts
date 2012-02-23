@@ -11,10 +11,12 @@
 #   - dist/**/*.js
 #
 src_files:
-    - extension/scripts/lib/jquery-1.7.1.min.js
-    - extension/scripts/lib/underscore-min.js
-    - extension/scripts/lib/backbone-min.js
-    - extension/scripts/collections/**/*.js
+  - extension/scripts/lib/jquery-1.7.1.min.js
+  - extension/scripts/lib/underscore-min.js
+  - extension/scripts/lib/backbone-min.js
+  - extension/scripts/models/**/*.js
+  - extension/scripts/collections/**/*.js
+  - extension/scripts/views/**/*.js
 
 # stylesheets
 #
