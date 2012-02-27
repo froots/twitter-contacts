@@ -15,7 +15,7 @@
     LoadContactsView.prototype.template = _.template('<input type="text" name="screen_name"><input type="submit" value="Load Contacts">');
 
     LoadContactsView.prototype.render = function() {
-      this.$el.html(this.template(this.model.toJSON()));
+      this.$el.html(this.template);
       return this.el;
     };
 
