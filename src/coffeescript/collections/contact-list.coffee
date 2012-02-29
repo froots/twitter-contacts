@@ -1,1 +1,0 @@
-class window.ContactList extends Backbone.Collection
