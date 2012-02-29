@@ -6,9 +6,29 @@
 	</head>
 	<body>
 		<div id="app"></div>
+
+    <!-- templates -->
+    <script type="text/html" id="_UserForm">
+      <form id="user-form">
+        <div>
+          <label for="screen-name">Screen name</label>
+          <input type="text" name="screen-name" placeholder="Your Twitter screen name">
+        </div>
+        <div>
+          <input type="submit" value="Download contacts">
+        </div>
+      </form>
+    </script>
+
 		<script src="scripts/lib/jquery-1.7.1.min.js"></script>
 		<script src="scripts/lib/underscore-min.js"></script>
 		<script src="scripts/lib/backbone-min.js"></script>
     <script src="scripts/lib/radio.js"></script>
+
+    <!-- views -->
+    <script src="scripts/views/user-form.js"></script>
+
+    <!-- app -->
+    <script src="scripts/apps/popup.js"></script>
 	</body>
 </html>

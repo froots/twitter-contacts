@@ -8,25 +8,10 @@
 		<script src="scripts/lib/jquery-1.7.1.min.js"></script>
 		<script src="scripts/lib/underscore-min.js"></script>
 		<script src="scripts/lib/backbone-min.js"></script>
-		<script>
-			var Contacts = Backbone.Collection.extend({
-				url: "http://api.twitter.com/1/friends/ids.json?screen_name=froots101"
-			});
+		
+		<!-- collections -->
+		<script src="scripts/collections/contacts-list.js"></script>
 
-			var app = {
-				init: function() {
-					var contacts = new Contacts();
-					console.log("Fetching contacts");
-					contacts.fetch({
-						success: function(collection, response) {
-							console.log("Success", response);
-						},
-						error: function(collection, response) {
-							console.log("Error", response);
-						}
-					});
-				}
-			};
-		</script>
+		<script src="scripts/apps/background.js"></script>
 	</body>
 </html>
