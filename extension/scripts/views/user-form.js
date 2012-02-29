@@ -16,6 +16,7 @@ var UserForm = Backbone.View.extend({
 
   handleSubmit: function(ev) {
     ev.preventDefault();
-    console.log(this.$('input[name=screen-name]').val());
+    var screenName = this.$('input[name=screen-name]').val();
+    popupApp.broadcast('downloadContacts', screenName);
   }
 });
