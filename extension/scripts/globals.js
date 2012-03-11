@@ -1,1 +1,1 @@
-var API_ROOT = "http://api.twitter.com/1/";
+var API_ROOT = "https://api.twitter.com/1/";

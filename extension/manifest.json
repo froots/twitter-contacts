@@ -9,6 +9,6 @@
 	"background_page": "background.html",
 	"permissions": [
 		"background",
-		"http://api.twitter.com/"
+		"https://api.twitter.com/"
 	]
 }

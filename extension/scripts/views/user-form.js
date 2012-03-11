@@ -11,12 +11,12 @@ var UserForm = Backbone.View.extend({
 
   render: function() {
     this.$el.html(this.template());
-    return this.el;
+    return this;
   },
 
   handleSubmit: function(ev) {
     ev.preventDefault();
     var screenName = this.$('input[name=screen-name]').val();
-    popupApp.broadcast('downloadContacts', screenName);
+    radio('submitUserForm').broadcast(screenName);
   }
 });
