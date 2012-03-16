@@ -1,15 +1,13 @@
 var ContactsList = Backbone.Collection.extend({
   model: Contact,
 
-  url: function() {
-    return API_ROOT + "friends/ids.json?screen_name=" + this.user.get("screenName");
-  },
-
   initialize: function(models, options) {
     this.user = options.user;
+    this.userIds = options.userIds;
+    this.userIds.on('change:ids', this.handleUserIdReset, this);
   },
 
-  parse: function(response) {
-    console.log('Parser', response);
+  handleUserIdReset: function() {
+    console.log('start pulling actual contacts', this.userIds.get('ids'));
   }
 });

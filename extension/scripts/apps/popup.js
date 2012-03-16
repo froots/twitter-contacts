@@ -12,9 +12,15 @@ var PopupApp = Backbone.View.extend({
   },
 
   submitsUserForm: function(screenName) {
-    this.user = new User({ screenName: screenName });
-    this.contactsList = new ContactsList([], { user: this.user });
-    this.contactsList.fetch();
+    this.userIds = new UserIds({ screenName: screenName });
+    this.user = new User({
+      screenName: screenName
+    });
+    this.contactsList = new ContactsList([], {
+      user: this.user,
+      userIds: this.userIds
+    });
+    this.userIds.fetch();
   }
 });
 
