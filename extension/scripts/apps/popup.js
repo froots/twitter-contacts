@@ -20,6 +20,10 @@ var PopupApp = Backbone.View.extend({
       user: this.user,
       userIds: this.userIds
     });
+    this.contactsView = new ContactsView({
+      collection: this.contactsList
+    });
+    this.$el.append(this.contactsView.render().el);
     this.userIds.fetch();
   }
 });

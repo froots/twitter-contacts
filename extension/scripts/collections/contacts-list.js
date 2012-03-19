@@ -5,6 +5,8 @@ var ContactsList = Backbone.Collection.extend({
     _.bindAll(this, 'createUserLookup', 'fetchLookup');
     this.user = options.user;
     this.userIds = options.userIds;
+    this.requestCount = 0;
+    this.blockCount = 0;
     this.userIds.on('change:ids', this.handleUserIdReset, this);
   },
 
@@ -14,8 +16,11 @@ var ContactsList = Backbone.Collection.extend({
 
   loadAll: function() {
     var divided = this.userIds.getBlocks();
+    this.blockCount = divided.length;
     this.reset([]);
+    this.requestCount = 0;
     this.userLookups = [];
+    this.trigger('start-load', this);
     _.each(divided, this.createUserLookup);
     this.fetchAllLookups();
   },
@@ -35,7 +40,10 @@ var ContactsList = Backbone.Collection.extend({
   },
 
   handleLookup: function(lookup) {
+    this.requestCount++;
     this.add(lookup.models);
-    console.log(this.length);
+    if (this.requestCount == this.blockCount) {
+      this.trigger('complete-load', this);
+    }
   }
 });
