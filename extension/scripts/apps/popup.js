@@ -1,7 +1,10 @@
 var PopupApp = Backbone.View.extend({
   initialize: function(options) {
     this.background = options.background;
-    this.components = {};
+    this.components = {
+      header: new HeaderView()
+    };
+    this.$el.append(this.components.header.render().el);
     this.addUserForm();
   },
 

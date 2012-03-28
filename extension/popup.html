@@ -9,6 +9,13 @@
 		<div id="popup-app"></div>
 
     <!-- templates -->
+    <script type="text/html" id="_HeaderView">
+      <h1>Twitter Contacts</h1>
+      <% if(screenName) { %>
+        <div class="head-user"><%= screenName %></div>
+      <% } %>
+    </script>
+
     <script type="text/html" id="_UserForm">
       <form>
         <div>
@@ -51,9 +58,10 @@
     <script src="scripts/collections/user-lookup.js"></script>
 
     <!-- views -->
-    <script src="scripts/views/user-form.js"></script>
-    <script src="scripts/views/contacts-view.js"></script>
     <script src="scripts/views/contacts-loading-view.js"></script>
+    <script src="scripts/views/contacts-view.js"></script>
+    <script src="scripts/views/header-view.js"></script>
+    <script src="scripts/views/user-form.js"></script>
 
     <!-- app -->
     <script src="scripts/apps/popup.js"></script>
