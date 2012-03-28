@@ -8,10 +8,23 @@ var PopupApp = Backbone.View.extend({
   addUserForm: function() {
     this.components.userForm = new UserForm();
     this.$el.append(this.components.userForm.render().el);
-    radio('submitUserForm').subscribe([this.submitsUserForm, this]);
+    radio('submitUserForm').subscribe([this.onUserFormSubmit, this]);
   },
 
-  submitsUserForm: function(screenName) {
+  removeUserForm: function() {
+    this.components.userForm.remove();
+    radio('submitUserForm').unsubscribe();
+  },
+
+  onUserFormSubmit: function(screenName) {
+    this.initializeNewDownload(screenName);
+  },
+
+  onContactsListComplete: function(contacts) {
+    this.removeUserForm();
+  },
+
+  initializeNewDownload: function(screenName) {
     this.userIds = new UserIds({ screenName: screenName });
     this.user = new User({
       screenName: screenName
@@ -20,11 +33,12 @@ var PopupApp = Backbone.View.extend({
       user: this.user,
       userIds: this.userIds
     });
-    this.contactsView = new ContactsView({
+    this.components.contactsView = new ContactsView({
       collection: this.contactsList
     });
-    this.$el.append(this.contactsView.render().el);
+    this.$el.append(this.components.contactsView.render().el);
     this.userIds.fetch();
+    radio('ContactsList:complete-load').subscribe([this.onContactsListComplete, this]);
   }
 });
 

@@ -8,6 +8,7 @@ var ContactsList = Backbone.Collection.extend({
     this.requestCount = 0;
     this.blockCount = 0;
     this.userIds.on('change:ids', this.handleUserIdReset, this);
+    this.on('complete-load', this.onCompleteLoad, this);
   },
 
   handleUserIdReset: function() {
@@ -27,7 +28,7 @@ var ContactsList = Backbone.Collection.extend({
 
   createUserLookup: function(block) {
     var lookup = new UserLookup({}, { ids: block });
-    lookup.on('reset', this.handleLookup, this);
+    lookup.on('reset', this.onLookupReset, this);
     this.userLookups.push(lookup);
   },
 
@@ -39,11 +40,15 @@ var ContactsList = Backbone.Collection.extend({
     lookup.postFetch();
   },
 
-  handleLookup: function(lookup) {
+  onLookupReset: function(lookup) {
     this.requestCount++;
     this.add(lookup.models);
     if (this.requestCount == this.blockCount) {
       this.trigger('complete-load', this);
     }
+  },
+
+  onCompleteLoad: function() {
+    radio('ContactsList:complete-load').broadcast(this);
   }
 });
