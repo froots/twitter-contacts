@@ -1,8 +1,11 @@
 var PopupApp = Backbone.View.extend({
   initialize: function(options) {
     this.background = options.background;
+    this.user = new User();
     this.components = {
-      header: new HeaderView()
+      header: new HeaderView({
+        model: this.user
+      })
     };
     this.$el.append(this.components.header.render().el);
     this.addUserForm();
@@ -29,9 +32,7 @@ var PopupApp = Backbone.View.extend({
 
   initializeNewDownload: function(screenName) {
     this.userIds = new UserIds({ screenName: screenName });
-    this.user = new User({
-      screenName: screenName
-    });
+    this.user.set({ 'screenName': screenName });
     this.contactsList = new ContactsList([], {
       user: this.user,
       userIds: this.userIds

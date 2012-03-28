@@ -4,10 +4,11 @@ var HeaderView = Backbone.View.extend({
 
   initialize: function() {
     this.template = _.template($('#_HeaderView').html());
+    this.model.on('change:screenName', this.render, this);
   },
 
   render: function() {
-    this.data = (_.isUndefined(this.model)) ? { screenName: '' } : this.model.toJSON();
+    this.data = this.model.toJSON();
     this.$el.html(this.template(this.data));
     return this;
   }
