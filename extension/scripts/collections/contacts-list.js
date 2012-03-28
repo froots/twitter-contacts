@@ -11,6 +11,10 @@ var ContactsList = Backbone.Collection.extend({
     this.on('complete-load', this.onCompleteLoad, this);
   },
 
+  comparator: function(contact) {
+    return contact.get('screen_name');
+  },
+
   handleUserIdReset: function() {
     this.loadAll();
   },

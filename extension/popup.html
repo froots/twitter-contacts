@@ -29,7 +29,13 @@
     </script>
 
     <script type="text/html" id="_ContactsView">
+      <ul class="contact-list"></ul>
+    </script>
 
+    <script type="text/html" id="_ContactView">
+      <img src="<%= profile_image_url %>" width="48" height="48" alt="<%= name %>" class="avatar">
+      <span class="screen-name"><%= screen_name %></span>
+      <span class="name"><%= name %></span>
     </script>
 
     <script type="text/html" id="_ContactsLoadingView">
@@ -60,6 +66,7 @@
     <!-- views -->
     <script src="scripts/views/contacts-loading-view.js"></script>
     <script src="scripts/views/contacts-view.js"></script>
+    <script src="scripts/views/contact-view.js"></script>
     <script src="scripts/views/header-view.js"></script>
     <script src="scripts/views/user-form.js"></script>
 
