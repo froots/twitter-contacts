@@ -7,7 +7,6 @@ var ContactsLoadingView = Backbone.View.extend({
   initialize: function() {
     this.template = _.template($('#_ContactsLoadingView').html());
     this.collection.on('add', this.onAdd, this);
-    this.collection.on('complete-load', this.onCompleteLoad, this);
   },
 
   render: function() {
@@ -29,10 +28,6 @@ var ContactsLoadingView = Backbone.View.extend({
 
   onAdd: function() {
     this.render();
-  },
-
-  onCompleteLoad: function() {
-    alert('done'); 
   }
 
 });

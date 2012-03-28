@@ -6,9 +6,22 @@ var ContactsView = Backbone.View.extend({
   initialize: function() {
     this.template = _.template($('#_ContactsView').html());
     this.collection.on('start-load', this.onStartLoad, this);
+    this.collection.on('complete-load', this.onCompleteLoad, this);
+  },
+
+  render: function() {
+    return this;
   },
 
   onStartLoad: function() {
+    this.createLoadingView();
+  },
+
+  onCompleteLoad: function() {
+    this.destroyLoadingView();
+  },
+
+  createLoadingView: function() {
     if (!this.loadView) {
       this.loadView = new ContactsLoadingView({
         collection: this.collection
@@ -17,7 +30,9 @@ var ContactsView = Backbone.View.extend({
     this.$el.append(this.loadView.render().el);
   },
 
-  render: function() {
-    return this;
+  destroyLoadingView: function() {
+    if (this.loadView) {
+      this.loadView.remove();
+    }
   }
 });
