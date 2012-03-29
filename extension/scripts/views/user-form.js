@@ -1,5 +1,5 @@
 var UserForm = Backbone.View.extend({
-  className: 'user-form',
+  className: 'user-form container',
 
   initialize: function() {
     this.template = _.template($('#_UserForm').html());

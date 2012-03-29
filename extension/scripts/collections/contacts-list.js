@@ -12,7 +12,7 @@ var ContactsList = Backbone.Collection.extend({
   },
 
   comparator: function(contact) {
-    return contact.get('screen_name');
+    return contact.get('screen_name').toLowerCase();
   },
 
   handleUserIdReset: function() {
