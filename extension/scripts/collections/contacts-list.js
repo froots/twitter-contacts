@@ -54,5 +54,13 @@ var ContactsList = Backbone.Collection.extend({
 
   onCompleteLoad: function() {
     radio('ContactsList:complete-load').broadcast(this);
+  },
+
+  search: function(searchTerm) {
+    var term = _.clean(searchTerm.toLowerCase());
+    return this.filter(function(contact) {
+      return (_.str.include(contact.get('screen_name').toLowerCase(), term) ||
+          _.str.include(contact.get('name').toLowerCase(), term));
+    });
   }
 });

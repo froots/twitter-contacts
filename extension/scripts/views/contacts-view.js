@@ -3,17 +3,28 @@ var ContactsView = Backbone.View.extend({
 
   className: "contacts-view",
 
+  events: {
+    "keyup .contacts-search": "searchChange",
+    "submit .contacts-filter": "searchSubmit"
+  },
+
   initialize: function() {
     _.bindAll(this, 'renderContact');
     this.template = _.template($('#_ContactsView').html());
     this.collection.on('start-load', this.onStartLoad, this);
     this.collection.on('complete-load', this.onCompleteLoad, this);
+    this.filter = "";
   },
 
   render: function() {
     this.$el.html(this.template());
-    this.collection.forEach(this.renderContact);
+    this.renderList(this.collection);
     return this;
+  },
+
+  renderList: function(collection) {
+    this.$('.contact-list').empty();
+    collection.forEach(this.renderContact);
   },
 
   renderContact: function(contact) {
@@ -43,5 +54,16 @@ var ContactsView = Backbone.View.extend({
     if (this.loadView) {
       this.loadView.remove();
     }
+  },
+
+  searchChange: function(ev) {
+    var searchTerm = $(ev.currentTarget).val();
+    if (this.filter !== searchTerm) {
+      this.renderList(this.collection.search(searchTerm));
+    }
+  },
+
+  searchSubmit: function(ev) {
+    ev.preventDefault();
   }
 });
