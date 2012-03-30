@@ -9,7 +9,6 @@ BackgroundStore.create = function(key) {
 BackgroundStore.prototype.retrieve = function() {
   if (!window.localStorage) return false;
   var val = localStorage[this.key];
-  console.log('localStore for ' + this.key, val);
   try {
     return JSON.parse(val);
   } catch(e) {
@@ -25,6 +24,6 @@ BackgroundStore.prototype.store = function(val) {
   } catch(e) {
     return false;
   }
-  localStorage[this.key] = val;
+  localStorage[this.key] = stringified;
   return true;
 };
