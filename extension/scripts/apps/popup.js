@@ -2,6 +2,9 @@ var PopupApp = Backbone.View.extend({
   initialize: function(options) {
     this.background = options.background;
     this.user = new User();
+    if (this.user.fetchFromLocal()) {
+      console.log('Found a local version!', this.user);
+    }
     this.components = {
       header: new HeaderView({
         model: this.user
