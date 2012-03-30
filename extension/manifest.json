@@ -9,6 +9,7 @@
 	"background_page": "background.html",
 	"permissions": [
 		"background",
+		"unlimitedStorage",
 		"https://api.twitter.com/"
 	]
 }

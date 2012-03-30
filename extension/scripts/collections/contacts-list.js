@@ -4,10 +4,12 @@ var ContactsList = Backbone.Collection.extend({
   initialize: function(models, options) {
     _.bindAll(this, 'createUserLookup', 'fetchLookup');
     this.user = options.user;
-    this.userIds = options.userIds;
+    this.userIds = (options && 'userIds' in options) ? options.userIds : null;
     this.requestCount = 0;
     this.blockCount = 0;
-    this.userIds.on('change:ids', this.handleUserIdReset, this);
+    if (this.userIds) {
+      this.userIds.on('change:ids', this.handleUserIdReset, this);
+    }
     this.on('complete-load', this.onCompleteLoad, this);
   },
 
@@ -53,6 +55,7 @@ var ContactsList = Backbone.Collection.extend({
   },
 
   onCompleteLoad: function() {
+    this.store();
     radio('ContactsList:complete-load').broadcast(this);
   },
 
@@ -62,5 +65,16 @@ var ContactsList = Backbone.Collection.extend({
       return (_.str.include(contact.get('screen_name').toLowerCase(), term) ||
           _.str.include(contact.get('name').toLowerCase(), term));
     });
+  },
+
+  store: function() {
+    var storage = new Store('contactsList');
+    storage.store(this.toJSON());
+  },
+
+  fetchFromLocal: function() {
+    var store = new Store('contactsList'),
+      contacts = store.retrieve();
+    this.reset(contacts);
   }
 });

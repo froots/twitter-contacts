@@ -10,7 +10,7 @@ var PopupApp = Backbone.View.extend({
     this.$el.append(this.components.header.render().el);
 
     if (this.user.fetchFromLocal()) {
-      console.log('Found a local version!', this.user);
+      this.fetchContactsFromLocal();
     } else {
       this.addUserForm();
     }
@@ -48,6 +48,17 @@ var PopupApp = Backbone.View.extend({
     this.$el.append(this.components.contactsView.render().el);
     this.userIds.fetch();
     radio('ContactsList:complete-load').subscribe([this.onContactsListComplete, this]);
+  },
+
+  fetchContactsFromLocal: function() {
+    this.contactsList = new ContactsList([], {
+      user: this.user
+    });
+    this.components.contactsView = new ContactsView({
+      collection: this.contactsList
+    });
+    this.$el.append(this.components.contactsView.render().el);
+    this.contactsList.fetchFromLocal();
   }
 });
 

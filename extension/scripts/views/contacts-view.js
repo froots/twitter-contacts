@@ -13,6 +13,7 @@ var ContactsView = Backbone.View.extend({
     this.template = _.template($('#_ContactsView').html());
     this.collection.on('start-load', this.onStartLoad, this);
     this.collection.on('complete-load', this.onCompleteLoad, this);
+    this.collection.on('reset', this.onCompleteLoad, this);
     this.filter = "";
   },
 
