@@ -1,3 +1,1 @@
-var Contact = Backbone.Model.extend({
-
-});
+var Contact = Backbone.Model.extend({});
