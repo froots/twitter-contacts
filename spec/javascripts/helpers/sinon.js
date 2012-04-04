@@ -1,5 +1,5 @@
 /**
- * Sinon.JS 1.3.1, 2012/01/04
+ * Sinon.JS 1.3.2, 2012/03/11
  *
  * @author Christian Johansen (christian@cjohansen.no)
  *
@@ -332,6 +332,10 @@ var sinon = (function (buster) {
         return div && obj && obj.nodeType === 1 && isDOMNode(obj);
     }
 
+    function isFunction(obj) {
+        return !!(obj && obj.constructor && obj.call && obj.apply);
+    }
+
     function mirrorProperties(target, source) {
         for (var prop in source) {
             if (!hasOwn.call(target, prop)) {
@@ -351,10 +355,9 @@ var sinon = (function (buster) {
             }
 
             var wrappedMethod = object[property];
-            var type = typeof wrappedMethod;
 
-            if (type != "function") {
-                throw new TypeError("Attempted to wrap " + type + " property " +
+            if (!isFunction(wrappedMethod)) {
+                throw new TypeError("Attempted to wrap " + (typeof wrappedMethod) + " property " +
                                     property + " as function");
             }
 
@@ -597,7 +600,7 @@ var sinon = (function (buster) {
             };
         } catch (e) {
             /* Node, but no util module - would be very old, but better safe than
-               sorry */
+             sorry */
         }
     }
 
@@ -688,6 +691,21 @@ var sinon = (function (buster) {
             }
         }
 
+        function incrementCallCount() {
+            this.called = true;
+            this.callCount += 1;
+            this.calledOnce = this.callCount == 1;
+            this.calledTwice = this.callCount == 2;
+            this.calledThrice = this.callCount == 3;
+        }
+
+        function createCallProperties() {
+            this.firstCall = this.getCall(0);
+            this.secondCall = this.getCall(1);
+            this.thirdCall = this.getCall(2);
+            this.lastCall = this.getCall(this.callCount - 1);
+        }
+
         var uuid = 0;
 
         // Public API
@@ -739,11 +757,8 @@ var sinon = (function (buster) {
             invoke: function invoke(func, thisValue, args) {
                 var matching = matchingFake(this.fakes, args);
                 var exception, returnValue;
-                this.called = true;
-                this.callCount += 1;
-                this.calledOnce = this.callCount == 1;
-                this.calledTwice = this.callCount == 2;
-                this.calledThrice = this.callCount == 3;
+
+                incrementCallCount.call(this);
                 push.call(this.thisValues, thisValue);
                 push.call(this.args, args);
                 push.call(this.callIds, callId++);
@@ -764,10 +779,7 @@ var sinon = (function (buster) {
 
                 push.call(this.returnValues, returnValue);
 
-                this.firstCall = this.getCall(0);
-                this.secondCall = this.getCall(1);
-                this.thirdCall = this.getCall(2);
-                this.lastCall = this.getCall(this.callCount - 1);
+                createCallProperties.call(this);
 
                 return returnValue;
             },
@@ -823,6 +835,18 @@ var sinon = (function (buster) {
                 fake.withArgs = function () {
                     return original.withArgs.apply(original, arguments);
                 };
+
+                for (var i = 0; i < this.args.length; i++) {
+                    if (fake.matches(this.args[i])) {
+                        incrementCallCount.call(fake);
+                        push.call(fake.thisValues, this.thisValues[i]);
+                        push.call(fake.args, this.args[i]);
+                        push.call(fake.returnValues, this.returnValues[i]);
+                        push.call(fake.exceptions, this.exceptions[i]);
+                        push.call(fake.callIds, this.callIds[i]);
+                    }
+                }
+                createCallProperties.call(fake);
 
                 return fake;
             },
@@ -1179,7 +1203,7 @@ var sinon = (function (buster) {
                 throw new TypeError(getCallbackError(stub, func, args));
             }
 
-            func.apply(null, stub.callbackArguments);
+            func.apply(stub.callbackContext, stub.callbackArguments);
         }
     }
 
@@ -1258,6 +1282,21 @@ var sinon = (function (buster) {
                 return this;
             },
 
+            callsArgOn: function callsArgOn(pos, context) {
+                if (typeof pos != "number") {
+                    throw new TypeError("argument index is not number");
+                }
+                if (typeof context != "object") {
+                    throw new TypeError("argument context is not an object");
+                }
+
+                this.callArgAt = pos;
+                this.callbackArguments = [];
+                this.callbackContext = context;
+
+                return this;
+            },
+
             callsArgWith: function callsArgWith(pos) {
                 if (typeof pos != "number") {
                     throw new TypeError("argument index is not number");
@@ -1269,9 +1308,36 @@ var sinon = (function (buster) {
                 return this;
             },
 
+            callsArgOnWith: function callsArgWith(pos, context) {
+                if (typeof pos != "number") {
+                    throw new TypeError("argument index is not number");
+                }
+                if (typeof context != "object") {
+                    throw new TypeError("argument context is not an object");
+                }
+
+                this.callArgAt = pos;
+                this.callbackArguments = slice.call(arguments, 2);
+                this.callbackContext = context;
+
+                return this;
+            },
+
             yields: function () {
                 this.callArgAt = -1;
                 this.callbackArguments = slice.call(arguments, 0);
+
+                return this;
+            },
+
+            yieldsOn: function (context) {
+                if (typeof context != "object") {
+                    throw new TypeError("argument context is not an object");
+                }
+
+                this.callArgAt = -1;
+                this.callbackArguments = slice.call(arguments, 1);
+                this.callbackContext = context;
 
                 return this;
             },
@@ -1280,6 +1346,19 @@ var sinon = (function (buster) {
                 this.callArgAt = -1;
                 this.callArgProp = prop;
                 this.callbackArguments = slice.call(arguments, 1);
+
+                return this;
+            },
+
+            yieldsToOn: function (prop, context) {
+                if (typeof context != "object") {
+                    throw new TypeError("argument context is not an object");
+                }
+
+                this.callArgAt = -1;
+                this.callArgProp = prop;
+                this.callbackArguments = slice.call(arguments, 2);
+                this.callbackContext = context;
 
                 return this;
             }
@@ -1960,7 +2039,9 @@ if (typeof sinon == "undefined") {
                 this.timeouts = [];
             }
 
-            delete this.timeouts[timerId];
+            if (timerId in this.timeouts) {
+                delete this.timeouts[timerId];
+            }
         },
 
         setInterval: function setInterval(callback, timeout) {
@@ -2164,7 +2245,7 @@ if (typeof sinon == "undefined") {
 
         return clock;
     };
-}(typeof global != "undefined" ? global : this));
+}(typeof global != "undefined" && typeof global !== "function" ? global : this));
 
 sinon.timers = {
     setTimeout: setTimeout,
@@ -2445,10 +2526,11 @@ sinon.xhr = { XMLHttpRequest: this.XMLHttpRequest };
                 var defake = some(FakeXMLHttpRequest.filters,function(filter) {
                     return filter.apply(this,xhrArgs)
                 });
-                if (defake) { sinon.FakeXMLHttpRequest.defake(this,arguments); }
-            } else {
-                this.readyStateChange(FakeXMLHttpRequest.OPENED);
+                if (defake) {
+                  return sinon.FakeXMLHttpRequest.defake(this,arguments);
+                }
             }
+            this.readyStateChange(FakeXMLHttpRequest.OPENED);
         },
 
         readyStateChange: function readyStateChange(state) {
@@ -3126,7 +3208,7 @@ if (typeof module == "object" && typeof require == "function") {
 
     sinon.sandbox.useFakeXMLHttpRequest = sinon.sandbox.useFakeServer;
 
-    if (typeof module != "undefined") {
+    if (typeof module == "object" && typeof require == "function") {
         module.exports = sinon.sandbox;
     }
 }());
